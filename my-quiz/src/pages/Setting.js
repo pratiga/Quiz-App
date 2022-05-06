@@ -1,10 +1,19 @@
-import { Button, Container, Typography } from '@mui/material'
+import { Button, CircularProgress, Container, Typography } from '@mui/material'
 import { Box } from "@mui/system"
 import React from 'react'
 import SelectField from '../components/SelectField'
 import TextFieldComp from '../components/TextFieldComp'
+import useAxions from '../hooks/useAxions'
 
 const Setting = () => {
+  const{ response, error, loading } = useAxions({ url: "/api_category.php"});
+  if(loading) {
+    return (
+      <Box mt={20}>
+        <CircularProgress />
+      </Box>
+    );
+  }
   const handleSubmit = (e) => {
     e.preventDefault();
   }
