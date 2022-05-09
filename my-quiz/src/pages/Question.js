@@ -3,6 +3,7 @@ import { Button,CircularProgress,Typography} from "@mui/material"
 import { Box } from "@mui/system";
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { decode} from 'html-entities'
 import { useDispatch, useSelector } from 'react-redux';
 import useAxios from "../hooks/useAxions";
 import { handleScoreChange } from '../redux/actions';
@@ -83,7 +84,9 @@ const Questions = () => {
       </Typography>
     {options.map((data, id) => (
       <Box mt={2} >
-              <Button onClick={handelClickAnswer} variant='contained'>{data}</Button>
+              <Button onClick={handelClickAnswer} variant='contained'>
+                {decode(data)}
+              </Button>
       </Box>
     ))}
     <Box mt={5}>
