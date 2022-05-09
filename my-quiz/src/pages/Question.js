@@ -1,21 +1,27 @@
 import React from 'react'
 import { Button,CircularProgress,Typography} from "@mui/material"
 import { Box } from "@mui/system";
+import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useAxios from "../hooks/useAxions";
+import { handleScoreChange } from '../redux/actions';
 
 const getRandomInt = (max) => {
   return Math.floor(Math.floor(max));
 }
+
 
 const Questions = () => {
   const{ 
         question_category,
         question_difficulty,
         question_type,
-        amount_of_question
+        amount_of_question,
+        score,
         } = useSelector(state => state);
+  const navigate = useNavigate();
+  const dispatch = useDispatch()
   let apiUrl = `/api.php?amount=${amount_of_question}`;
  if(question_category) {
    apiUrl = apiUrl.concat(`&category = ${question_category}`)
@@ -30,16 +36,16 @@ const Questions = () => {
   const {response,loading} = useAxios({url:apiUrl })
   const [questionIndex, setQuestionIndex] = useState(0)
   const [options,setOptions] = useState([]);
-  console.log(options)
+  
   
   useEffect(() => {
-    if(response?.results.lenght) {
+    if(response?.results.length) {
       const question = response.results[questionIndex];
       let answers = [...question.incorrect_answers];
       answers.splice(
         getRandomInt(question.incorrect_answers.length),
         0,
-        question.incorrect_answers
+        question.correct_answer
       );
       setOptions(answers);
     }
@@ -54,18 +60,34 @@ const Questions = () => {
     )
   }
   
+  const handelClickAnswer = (e) => {
+    const question = response.results[questionIndex];
+    if (e.target.textContent === question.correct_answer) {
+      dispatch(handleScoreChange(score + 1))
+    }
+    if(questionIndex + 1 < response.results.length) {
+      setQuestionIndex(questionIndex + 1)
+    }
+    else {
+       navigate("/score")
+    }
+  };
+  
   return (
     <Box>
     <Typography variant="h4">Questions {questionIndex + 1}</Typography>
-    <Typography mt={5}>{response.results[questionIndex].question}</Typography>
+    <Typography mt={5}>
+        
+        {decode(response.results[questionIndex].question)}
+        
+      </Typography>
     {options.map((data, id) => (
       <Box mt={2} >
-      console.log(data)
-        <Button variant='contained'>{data}</Button>
+              <Button onClick={handelClickAnswer} variant='contained'>{data}</Button>
       </Box>
     ))}
     <Box mt={5}>
-      Score: 2/6
+      Score: {score}/{response.results.length}
     </Box>
     </Box>
   )
