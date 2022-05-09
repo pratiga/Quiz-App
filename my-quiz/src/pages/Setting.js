@@ -1,15 +1,14 @@
 import { Button, CircularProgress, Container, Typography } from '@mui/material'
 import { Box } from "@mui/system"
 import React from 'react'
-import { NavLink } from 'react-router-dom';
-// import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import SelectField from '../components/SelectField'
 import TextFieldComp from '../components/TextFieldComp'
 import useAxions from '../hooks/useAxions'
 
 const Setting = () => {
   const{ response, error, loading } = useAxions({ url: "/api_category.php"});
-  // const navs = useHistory()
+ const navigate = useNavigate()
   if(loading) {
     return (
       <Box mt={20}>
@@ -40,7 +39,7 @@ const Setting = () => {
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    // navs.push("/question");
+    navigate("/question");
   };
   
   
@@ -56,11 +55,11 @@ const Setting = () => {
       <SelectField options= {typeOptions} label="Type" />
       <TextFieldComp />
       <Box mt={3} width="100%">
-      <NavLink to="/question">
+      {/* <NavLink to="/question"> */}
         <Button fullWidth variant='contained' type="submit">
          Get Started
         </Button>
-        </NavLink>
+        {/* </NavLink> */}
       </Box>
     </form>
     </Container>
